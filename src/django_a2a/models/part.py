@@ -1,8 +1,8 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
-from a2a.models.artifact import Artifact
-from a2a.models.message import Message
+from django_a2a.models.artifact import Artifact
+from django_a2a.models.message import Message
 
 class FileContent(models.Model):
     """

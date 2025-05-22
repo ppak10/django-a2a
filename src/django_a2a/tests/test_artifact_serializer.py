@@ -1,8 +1,8 @@
 import pytest
 from uuid import uuid4
 
-from a2a.serializers.artifact import ArtifactSerializer
-from a2a.models.task import Task
+from django_a2a.serializers.artifact import ArtifactSerializer
+from django_a2a.models.task import Task
 
 @pytest.mark.django_db
 def test_artifact_serializer_valid_data():

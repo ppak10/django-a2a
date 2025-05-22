@@ -1,8 +1,8 @@
 import pytest
 from django.core.exceptions import ValidationError
-from a2a.models.part import Part, FileContent
-from a2a.models.artifact import Artifact
-from a2a.models.task import Task  # For creating tasks if needed
+from django_a2a.models.part import Part, FileContent
+from django_a2a.models.artifact import Artifact
+from django_a2a.models.task import Task  # For creating tasks if needed
 
 @pytest.mark.django_db
 def test_file_content_clean_validation():

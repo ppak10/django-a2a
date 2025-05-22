@@ -2,11 +2,11 @@ from django.test import TestCase
 from uuid import uuid4
 from django.utils.timezone import now
 
-from a2a.models.task import Task, TaskStatus
-from a2a.models.message import Message
-from a2a.models.part import Part
-from a2a.models.artifact import Artifact
-from a2a.serializers.task import TaskSerializer, TaskStatusSerializer
+from django_a2a.models.task import Task, TaskStatus
+from django_a2a.models.message import Message
+from django_a2a.models.part import Part
+from django_a2a.models.artifact import Artifact
+from django_a2a.serializers.task import TaskSerializer, TaskStatusSerializer
 
 
 class TaskStatusSerializerTest(TestCase):

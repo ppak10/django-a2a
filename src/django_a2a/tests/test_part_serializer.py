@@ -1,8 +1,8 @@
 from base64 import b64encode
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from a2a.models.part import FileContent, Part
-from a2a.serializers.part import FileContentSerializer, PartSerializer
+from django_a2a.models.part import FileContent, Part
+from django_a2a.serializers.part import FileContentSerializer, PartSerializer
 
 
 class FileContentSerializerTest(TestCase):

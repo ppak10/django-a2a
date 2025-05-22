@@ -2,9 +2,9 @@ import pytest
 
 from django.core.exceptions import ValidationError
 
-from a2a.models.message import Message
-from a2a.models.part import Part
-from a2a.models.task import Task
+from django_a2a.models.message import Message
+from django_a2a.models.part import Part
+from django_a2a.models.task import Task
 
 @pytest.mark.django_db
 def test_create_message_basic():

@@ -1,6 +1,6 @@
 from django.db import models
 
-from a2a.models.task import Task
+from django_a2a.models.task import Task
 
 class Artifact(models.Model):
     name = models.CharField(max_length=255, null=True, blank=True)

@@ -3,9 +3,9 @@
 from django.test import TestCase
 from uuid import UUID, uuid4
 
-from a2a.models.task import Task, TaskStatus
-from a2a.models.message import Message
-from a2a.models.part import Part 
+from django_a2a.models.task import Task, TaskStatus
+from django_a2a.models.message import Message
+from django_a2a.models.part import Part 
 from django.utils.timezone import now
 
 

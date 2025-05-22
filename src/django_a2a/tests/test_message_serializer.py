@@ -1,10 +1,10 @@
 from django.test import TestCase
 
-from a2a.models.message import Message
-from a2a.models.part import Part
-from a2a.models.task import Task
+from django_a2a.models.message import Message
+from django_a2a.models.part import Part
+from django_a2a.models.task import Task
 
-from a2a.serializers.message import MessageSerializer
+from django_a2a.serializers.message import MessageSerializer
 
 class MessageSerializerTests(TestCase):
     def setUp(self):

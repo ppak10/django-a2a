@@ -1,11 +1,11 @@
 from rest_framework import serializers
 
-from a2a.models.artifact import Artifact
-from a2a.models.part import Part
-from a2a.models.task import Task
+from django_a2a.models.artifact import Artifact
+from django_a2a.models.part import Part
+from django_a2a.models.task import Task
 
 from rest_framework import serializers
-from a2a.serializers.part import PartSerializer
+from django_a2a.serializers.part import PartSerializer
 
 class ArtifactSerializer(serializers.ModelSerializer):
     parts = PartSerializer(many=True)

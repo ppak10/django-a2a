@@ -1,6 +1,6 @@
 import pytest
-from a2a.models.artifact import Artifact
-from a2a.models.task import Task
+from django_a2a.models.artifact import Artifact
+from django_a2a.models.task import Task
 
 @pytest.mark.django_db
 def test_create_artifact_minimal():

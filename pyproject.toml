@@ -17,8 +17,8 @@ classifiers = [
 ]
 
 dependencies = [
-  "Django>=5.0",
-  "djangorestframework>=3.16.0"
+  "Django>=4.0",
+  "djangorestframework"
 ]
 
 [project.urls]

@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-from a2a.models.message import Message
-from a2a.models.task import Task 
-from a2a.models.part import Part
+from django_a2a.models.message import Message
+from django_a2a.models.task import Task 
+from django_a2a.models.part import Part
 
-from a2a.serializers.part import PartSerializer
+from django_a2a.serializers.part import PartSerializer
 
 class MessageSerializer(serializers.ModelSerializer):
     parts = PartSerializer(many=True)

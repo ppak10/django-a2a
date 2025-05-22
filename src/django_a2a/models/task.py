@@ -1,7 +1,7 @@
 from uuid import uuid4
 from django.db import models
 
-from a2a.models.message import Message
+from django_a2a.models.message import Message
 
 class Task(models.Model):
     """

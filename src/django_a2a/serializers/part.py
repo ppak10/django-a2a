@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from a2a.models.part import FileContent, Part
+from django_a2a.models.part import FileContent, Part
 
 class FileContentSerializer(serializers.ModelSerializer):
     class Meta:
