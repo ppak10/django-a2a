@@ -1,0 +1,32 @@
+name: Django 5.0
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install -e . Django==5.0 djangorestframework pytest pytest-django
+
+      - name: Run tests
+        run: |
+          cd tests/django_5
+          python manage.py migrate
+          pytest --ds=django_5.settings ../../src/django_a2a
