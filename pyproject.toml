@@ -16,7 +16,10 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 
-dependencies = []
+dependencies = [
+  "Django>=5.0",
+  "djangorestframework>=3.16.0"
+]
 
 [project.urls]
 Homepage = "https://github.com/ppak10/django-a2a"
@@ -38,7 +41,7 @@ include = [
 ]
 
 [tool.hatch.version]
-path = "src/django-a2a/__init__.py"  # or another version file
+path = "src/django_a2a/__init__.py"  # or another version file
 
 [tool.black]
 line-length = 88
