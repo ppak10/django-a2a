@@ -41,7 +41,7 @@ class TextPartSerializerTest(TestCase):
 
     def setUp(self):
         self.part = Part.objects.create(
-            type="text",
+            kind="text",
             metadata={"key": "value"},
             text="Sample text",
         )
@@ -49,21 +49,21 @@ class TextPartSerializerTest(TestCase):
     def test_serialize_part(self):
         serializer = PartSerializer(self.part)
         data = serializer.data
-        self.assertEqual(data['type'], "text")
+        self.assertEqual(data['kind'], "text")
         self.assertEqual(data['metadata'], {"key": "value"})
         self.assertEqual(data['text'], "Sample text")
 
     def test_deserialize_part(self):
         # Usually, you don’t create nested relationships on create with read_only=True fields
         data = {
-            "type": "text",
+            "kind": "text",
             "metadata": {"a": 1},
             "text": "New text",
         }
         serializer = PartSerializer(data=data)
         self.assertTrue(serializer.is_valid(), serializer.errors)
         part = serializer.save()
-        self.assertEqual(part.type, "text")
+        self.assertEqual(part.kind, "text")
         self.assertEqual(part.metadata, {"a": 1})
         self.assertEqual(part.text, "New text")
 
@@ -85,7 +85,7 @@ class FilePartSerializerTest(TestCase):
         )
 
         self.part = Part.objects.create(
-            type="file",
+            kind="file",
             metadata={"key": "value"},
             file=self.file_content_serialize,
         )
@@ -93,28 +93,28 @@ class FilePartSerializerTest(TestCase):
     def test_serialize_part(self):
         serializer = PartSerializer(self.part)
         data = serializer.data
-        self.assertEqual(data['type'], "file")
+        self.assertEqual(data['kind'], "file")
         self.assertEqual(data['metadata'], {"key": "value"})
         self.assertEqual(data['file']['id'], self.file_content_serialize.id)
 
     def test_deserialize_part(self):
         # Usually, you don’t create nested relationships on create with read_only=True fields
         data = {
-            "type": "file",
+            "kind": "file",
             "file_id": self.file_content_deserialize.id,
             "metadata": {"a": 1},
         }
         serializer = PartSerializer(data=data)
         self.assertTrue(serializer.is_valid(), serializer.errors)
         part = serializer.save()
-        self.assertEqual(part.type, "file")
+        self.assertEqual(part.kind, "file")
         self.assertEqual(part.metadata, {"a": 1})
 
 class DataPartSerializerTest(TestCase):
 
     def setUp(self):
         self.part = Part.objects.create(
-            type="data",
+            kind="data",
             metadata={"key": "value"},
             data={"foo": "bar"},
         )
@@ -122,21 +122,21 @@ class DataPartSerializerTest(TestCase):
     def test_serialize_part(self):
         serializer = PartSerializer(self.part)
         data = serializer.data
-        self.assertEqual(data['type'], "data")
+        self.assertEqual(data['kind'], "data")
         self.assertEqual(data['metadata'], {"key": "value"})
         self.assertEqual(data['data'], {"foo": "bar"})
 
     def test_deserialize_part(self):
         # Usually, you don’t create nested relationships on create with read_only=True fields
         data = {
-            "type": "data",
+            "kind": "data",
             "metadata": {"a": 1},
             "data": {"baz": "qux"},
         }
         serializer = PartSerializer(data=data)
         self.assertTrue(serializer.is_valid(), serializer.errors)
         part = serializer.save()
-        self.assertEqual(part.type, "data")
+        self.assertEqual(part.kind, "data")
         self.assertEqual(part.metadata, {"a": 1})
 
 
@@ -150,7 +150,7 @@ class InvalidTypePartSerializerTest(TestCase):
             uri="http://example.com/file/example.txt"
         )
         self.part = Part.objects.create(
-            type="text",
+            kind="text",
             metadata={"key": "value"},
             text="Sample text",
         )
@@ -158,16 +158,16 @@ class InvalidTypePartSerializerTest(TestCase):
     def test_serialize_part(self):
         serializer = PartSerializer(self.part)
         data = serializer.data
-        self.assertEqual(data['type'], "text")
+        self.assertEqual(data['kind'], "text")
         self.assertEqual(data['metadata'], {"key": "value"})
         self.assertEqual(data['text'], "Sample text")
 
-    def test_deserialize_part_invalid_type(self):
+    def test_deserialize_part_invalid_kind(self):
         data = {
-            "type": "text",
+            "kind": "text",
             "metadata": {"a": 1},
             "text": "New text",
-            "data": {"baz": "qux"},  # Invalid because data is populated but type='text'
+            "data": {"baz": "qux"},  # Invalid because data is populated but kind='text'
         }
         serializer = PartSerializer(data=data)
         self.assertTrue(serializer.is_valid(), serializer.errors)  # Validation at serializer level passes (if serializer doesn't call full_clean)
@@ -177,6 +177,6 @@ class InvalidTypePartSerializerTest(TestCase):
             serializer.save()
     
         # Optionally assert the message text:
-        self.assertIn("Only `text` should be populated for type 'text'.", str(cm.exception))
+        self.assertIn("Only `text` should be populated for `kind` 'text'.", str(cm.exception))
 
 
