@@ -9,7 +9,7 @@ class Task(models.Model):
     """
     id = models.UUIDField(primary_key=True, default=uuid4)
 
-    session_id = models.UUIDField(null=True)
+    session_id = models.UUIDField(null=True, unique=True)
 
     # Task Status relationship assigned in TaskStatus model
 
