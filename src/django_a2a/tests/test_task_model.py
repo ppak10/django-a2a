@@ -27,12 +27,20 @@ class TaskModelTest(TestCase):
         self.assertLessEqual(tasks[0].id, tasks[1].id)
 
     def test_task_unique_id(self):
-        id1 = uuid4()
+        id = uuid4()
 
-        Task.objects.create(id=id1)
+        Task.objects.create(id=id)
 
         with self.assertRaises(IntegrityError):
-            Task.objects.create(id=id1)
+            Task.objects.create(id=id)
+
+    def test_task_unique_session_id(self):
+        session_id = uuid4()
+
+        Task.objects.create(session_id=session_id)
+
+        with self.assertRaises(IntegrityError):
+            Task.objects.create(session_id=session_id)
 
 
 class TaskStatusModelTest(TestCase):
