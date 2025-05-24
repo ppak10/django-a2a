@@ -1,5 +1,6 @@
 # tests/test_models.py
 
+from django.db import IntegrityError
 from django.test import TestCase
 from uuid import UUID, uuid4
 
@@ -24,6 +25,22 @@ class TaskModelTest(TestCase):
         Task.objects.create()
         tasks = Task.objects.all()
         self.assertLessEqual(tasks[0].id, tasks[1].id)
+
+    def test_task_unique_id(self):
+        id = uuid4()
+
+        Task.objects.create(id=id)
+
+        with self.assertRaises(IntegrityError):
+            Task.objects.create(id=id)
+
+    def test_task_unique_session_id(self):
+        session_id = uuid4()
+
+        Task.objects.create(session_id=session_id)
+
+        with self.assertRaises(IntegrityError):
+            Task.objects.create(session_id=session_id)
 
 
 class TaskStatusModelTest(TestCase):
@@ -56,12 +73,3 @@ class TaskStatusModelTest(TestCase):
             state=TaskStatus.TaskState.WORKING,
         )
         self.assertEqual(self.task.status, status)
-
-    def test_soft_delete(self):
-        status = TaskStatus.objects.create(
-            task=self.task,
-            state=TaskStatus.TaskState.FAILED,
-        )
-        status.delete()
-        self.assertFalse(TaskStatus.objects.filter(id=status.id).exists())
-

@@ -93,3 +93,54 @@ class TaskSerializerNestedWriteTest(TestCase):
         self.assertEqual(messages.count(), 1)
         self.assertEqual(messages[0].parts.first().text, "message 1 content")
         self.assertEqual(messages[0].role, "user")
+
+    def test_create_task_with_client_generated_ids(self):
+        id = uuid4()
+        session_id = uuid4()
+        payload = {
+            "id": str(id),
+            "session_id": str(session_id),
+        }
+
+        serializer = TaskSerializer(data=payload)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        task = serializer.save()
+
+        self.assertEqual(task.session_id, session_id)
+        self.assertEqual(task.id, id)
+
+    def test_create_task_with_duplicate_id(self):
+        id = uuid4()
+        session_id1 = uuid4()
+        session_id2 = uuid4()
+
+        # Create the initial task
+        Task.objects.create(id=id, session_id=session_id1)
+
+        # Attempt to create a second task with the same `id`
+        payload = {
+            "id": str(id),  # duplicate
+            "session_id": str(session_id2),
+        }
+
+        serializer = TaskSerializer(data=payload)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('id', serializer.errors)
+
+    def test_create_task_with_duplicate_session_id(self):
+        id1 = uuid4()
+        id2 = uuid4()
+        session_id = uuid4()
+
+        # Create the initial task
+        Task.objects.create(id=id1, session_id=session_id)
+
+        # Attempt to create a second task with the same `session_id`
+        payload = {
+            "id": str(id2),
+            "session_id": str(session_id),  # duplicate
+        }
+
+        serializer = TaskSerializer(data=payload)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('session_id', serializer.errors)
