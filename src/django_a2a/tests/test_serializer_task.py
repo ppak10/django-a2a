@@ -11,7 +11,7 @@ from django_a2a.serializers.task import TaskSerializer, TaskStatusSerializer
 
 class TaskStatusSerializerTest(TestCase):
     def test_serialize_task_status(self):
-        task = Task.objects.create(session_id=uuid4())
+        task = Task.objects.create(contextId=uuid4())
         status = TaskStatus.objects.create(task=task, state=TaskStatus.TaskState.WORKING, timestamp=now())
         serializer = TaskStatusSerializer(status)
         data = serializer.data
@@ -24,16 +24,16 @@ class TaskStatusSerializerTest(TestCase):
 
 class TaskSerializerTest(TestCase):
     def setUp(self):
-        self.task = Task.objects.create(session_id=uuid4())
+        self.task = Task.objects.create(contextId=uuid4())
 
         # Attach a TaskStatus
         self.status = TaskStatus.objects.create(task=self.task, state=TaskStatus.TaskState.COMPLETED, timestamp=now())
 
         self.artifact = Artifact.objects.create(task=self.task)
-        Part.objects.create(type="text", text="artifact text", artifact=self.artifact)
+        Part.objects.create(kind="text", text="artifact text", artifact=self.artifact)
 
         self.message = Message.objects.create(role="user")
-        Part.objects.create(type="text", text="message text", message=self.message)
+        Part.objects.create(kind="text", text="message text", message=self.message)
 
         self.message.task = self.task  # Assuming reverse relation like `related_name="history"`
         self.message.save()
@@ -43,7 +43,7 @@ class TaskSerializerTest(TestCase):
         data = serializer.data
 
         self.assertEqual(data["id"], str(self.task.id))
-        self.assertEqual(data["session_id"], str(self.task.session_id))
+        self.assertEqual(data["contextId"], str(self.task.contextId))
         
         # Test nested status
         self.assertIn("status", data)
@@ -59,13 +59,13 @@ class TaskSerializerTest(TestCase):
 
 class TaskSerializerNestedWriteTest(TestCase):
     def test_create_task_with_artifacts_and_history(self):
-        session_id = uuid4()
+        contextId = uuid4()
         payload = {
-            "session_id": str(session_id),
+            "contextId": str(contextId),
             "artifacts": [
                 {
                     "parts": [
-                        {"type": "text", "text": "artifact 1 content"}
+                        {"kind": "text", "text": "artifact 1 content"}
                     ]
                 }
             ],
@@ -73,7 +73,7 @@ class TaskSerializerNestedWriteTest(TestCase):
                 {
                     "role": "user",
                     "parts": [
-                        {"type": "text", "text": "message 1 content"}
+                        {"kind": "text", "text": "message 1 content"}
                     ]
                 }
             ]
@@ -83,7 +83,7 @@ class TaskSerializerNestedWriteTest(TestCase):
         self.assertTrue(serializer.is_valid(), serializer.errors)
         task = serializer.save()
 
-        self.assertEqual(task.session_id, session_id)
+        self.assertEqual(task.contextId, str(contextId))
 
         artifacts = Artifact.objects.filter(task=task)
         self.assertEqual(artifacts.count(), 1)
@@ -93,3 +93,53 @@ class TaskSerializerNestedWriteTest(TestCase):
         self.assertEqual(messages.count(), 1)
         self.assertEqual(messages[0].parts.first().text, "message 1 content")
         self.assertEqual(messages[0].role, "user")
+
+    def test_create_task_with_client_generated_ids(self):
+        id = uuid4()
+        contextId = uuid4()
+        payload = {
+            "id": str(id),
+            "contextId": str(contextId),
+        }
+
+        serializer = TaskSerializer(data=payload)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        task = serializer.save()
+
+        self.assertEqual(task.contextId, str(contextId))
+        self.assertEqual(task.id, id)
+
+    def test_create_task_with_duplicate_id(self):
+        id = uuid4()
+        contextId1 = uuid4()
+        contextId2 = uuid4()
+
+        # Create the initial task
+        Task.objects.create(id=id, contextId=str(contextId1))
+
+        # Attempt to create a second task with the same `id`
+        payload = {
+            "id": str(id),  # duplicate
+            "contextId": str(contextId2),
+        }
+
+        serializer = TaskSerializer(data=payload)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('id', serializer.errors)
+
+    def test_create_task_with_duplicate_contextId(self):
+        id1 = uuid4()
+        id2 = uuid4()
+        contextId = uuid4()
+
+        # Create the initial task
+        Task.objects.create(id=id1, contextId=str(contextId))
+
+        # Attempt to create a second task with the same `contextId`
+        payload = {
+            "id": str(id2),
+            "contextId": str(contextId),  # duplicate
+        }
+
+        serializer = TaskSerializer(data=payload)
+        self.assertTrue(serializer.is_valid())

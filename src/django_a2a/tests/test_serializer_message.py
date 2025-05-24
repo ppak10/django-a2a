@@ -15,7 +15,7 @@ class MessageSerializerTests(TestCase):
             'task_id': self.task.id,
             'parts': [
                 {
-                    'type': 'text',
+                    'kind': 'text',
                     'text': 'This is a test part.'
                 },
             ]

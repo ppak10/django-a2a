@@ -10,14 +10,11 @@ def test_artifact_serializer_valid_data():
     data = {
         "name": "Log Output",
         "description": "Standard output from script",
-        "index": 0,
-        "append": True,
-        "last_chunk": False,
         "metadata": {"size": "1MB"},
         "task_id": task.id,
         "parts": [
             {
-                'type': 'text',
+                'kind': 'text',
                 'text': 'This is a test part.'
             },
         ]
@@ -37,7 +34,7 @@ def test_artifact_serializer_missing_optional_fields():
         "task_id": task.id,
         "parts": [
             {
-                'type': 'text',
+                'kind': 'text',
                 'text': 'This is a test part.'
             },
         ]
@@ -47,8 +44,6 @@ def test_artifact_serializer_missing_optional_fields():
     assert serializer.is_valid(), serializer.errors
     artifact = serializer.save()
     assert artifact.name is None
-    assert artifact.index is 0
-    assert artifact.append is None
 
 
 @pytest.mark.django_db
@@ -58,7 +53,7 @@ def test_artifact_serializer_invalid_metadata():
         "task_id": task.id,
         "parts": [
             {
-                'type': 'text',
+                'kind': 'text',
                 'text': 'This is a test part.'
             },
         ],
@@ -76,7 +71,7 @@ def test_artifact_serializer_invalid_task_reference():
         "task_id": 0,
         "parts": [
             {
-                'type': 'text',
+                'kind': 'text',
                 'text': 'This is a test part.'
             },
         ],
