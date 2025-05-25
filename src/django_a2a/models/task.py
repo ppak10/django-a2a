@@ -49,7 +49,7 @@ class TaskStatus(models.Model):
     ##############
     # A2A Schema #
     ##############
-    state = models.CharField(max_length=20, choices=TaskState.choices)
+    state = models.CharField(max_length=20, choices=TaskState.choices, default=TaskState.SUBMITTED)
     message = models.OneToOneField(
         Message,
         on_delete=models.SET_NULL,

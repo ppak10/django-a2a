@@ -25,12 +25,14 @@ class TaskSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         artifacts_data = validated_data.pop('artifacts', [])
         history_data = validated_data.pop('history', [])
-        status_data = validated_data.pop('status', None)
+        status_data = validated_data.pop('status', {})
 
         task = Task.objects.create(**validated_data)
 
-        if status_data:
-            TaskStatus.objects.create(task=task, **status_data)
+        status_data["task"] = task.id
+        status_serializer = TaskStatusSerializer(data=status_data)
+        status_serializer.is_valid(raise_exception=True)
+        status_serializer.save()
 
         for artifact in artifacts_data:
             parts = artifact.pop('parts', [])

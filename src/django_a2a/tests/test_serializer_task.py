@@ -84,6 +84,8 @@ class TaskSerializerNestedWriteTest(TestCase):
         task = serializer.save()
 
         self.assertEqual(task.contextId, str(contextId))
+        self.assertEqual(task.status.state, TaskStatus.TaskState.SUBMITTED)
+        self.assertIsNotNone(task.status.timestamp)
 
         artifacts = Artifact.objects.filter(task=task)
         self.assertEqual(artifacts.count(), 1)
@@ -93,6 +95,7 @@ class TaskSerializerNestedWriteTest(TestCase):
         self.assertEqual(messages.count(), 1)
         self.assertEqual(messages[0].parts.first().text, "message 1 content")
         self.assertEqual(messages[0].role, "user")
+
 
     def test_create_task_with_client_generated_ids(self):
         id = uuid4()
@@ -105,6 +108,9 @@ class TaskSerializerNestedWriteTest(TestCase):
         serializer = TaskSerializer(data=payload)
         self.assertTrue(serializer.is_valid(), serializer.errors)
         task = serializer.save()
+
+        self.assertEqual(task.status.state, TaskStatus.TaskState.SUBMITTED)
+        self.assertIsNotNone(task.status.timestamp)
 
         self.assertEqual(task.contextId, str(contextId))
         self.assertEqual(task.id, id)
