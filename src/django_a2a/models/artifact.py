@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from uuid import uuid4
@@ -28,7 +29,15 @@ class Artifact(models.Model):
     )
 
     # Necessary for ordering
-    created_on = models.DateTimeField(default=timezone.now) 
+    created_on = models.DateTimeField(default=timezone.now)
+
+    # Ownership for user authentication.
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
 
     # Should update when new parts are added
     updated_on = models.DateTimeField(default=timezone.now)

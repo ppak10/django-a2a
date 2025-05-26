@@ -21,6 +21,7 @@ class ArtifactSerializer(serializers.ModelSerializer):
         # Include if writing directly, otherwise inferred from task serializer.
         required=False,
     )
+    task = serializers.PrimaryKeyRelatedField(queryset=Task.objects.all(), write_only=True, required=False)
 
     class Meta:
         model = Artifact

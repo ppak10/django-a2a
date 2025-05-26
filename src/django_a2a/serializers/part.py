@@ -1,14 +1,13 @@
 from rest_framework import serializers
 
-from django_a2a.models.part import FileContent, Part
+from django_a2a.models import FileContent, Part, Message
 
 class FileContentSerializer(serializers.ModelSerializer):
     class Meta:
         model = FileContent
-        fields = "__all__"
+        exclude = ["id", "created_by", "created_on"]
 
 class PartSerializer(serializers.ModelSerializer):
-
     # TODO: Handle integration of file upload to bucket.
     file = FileContentSerializer(read_only=True)
     file_id = serializers.PrimaryKeyRelatedField(
@@ -21,4 +20,4 @@ class PartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Part
-        fields = "__all__"
+        exclude = ["id", "created_by", "created_on", "message"]

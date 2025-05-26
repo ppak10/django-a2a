@@ -1,6 +1,7 @@
-from uuid import uuid4
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from uuid import uuid4
 
 from django_a2a.models.message import Message
 
@@ -18,7 +19,25 @@ class Task(models.Model):
     # `history` History relationship assigned in Message model
     metadata = models.JSONField(blank=True, null=True)
 
-    # created_on and updated_on would be tracked externally here.
+    # Is there supposed to be a `kind` field here?
+    # https://google.github.io/A2A/specification/#92-basic-execution-synchronous-polling-style
+
+    ###################################
+    # Additional Relations and Fields #
+    ###################################
+
+    # Ownership for user authentication.
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+
+    created_on = models.DateTimeField(default=timezone.now) 
+
+    # Should update when new parts are added
+    updated_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"Task Id:{self.id}"
@@ -67,6 +86,19 @@ class TaskStatus(models.Model):
         on_delete=models.CASCADE,
         related_name='status'
     )
+
+    # Ownership for user authentication.
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+
+    created_on = models.DateTimeField(default=timezone.now) 
+
+    # Should update when new parts are added
+    updated_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.state} @ {self.timestamp or 'no timestamp'}"

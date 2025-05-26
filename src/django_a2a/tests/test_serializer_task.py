@@ -16,8 +16,8 @@ class TaskStatusSerializerTest(TestCase):
         serializer = TaskStatusSerializer(status)
         data = serializer.data
 
-        self.assertEqual(data["id"], status.id)
-        self.assertEqual(data["task"], task.id)
+        self.assertNotIn("id", data)
+        self.assertNotIn("task", data)
         self.assertEqual(data["state"], TaskStatus.TaskState.WORKING)
         self.assertIsNotNone(data["timestamp"])
 

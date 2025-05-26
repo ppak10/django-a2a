@@ -95,7 +95,7 @@ class FilePartSerializerTest(TestCase):
         data = serializer.data
         self.assertEqual(data['kind'], "file")
         self.assertEqual(data['metadata'], {"key": "value"})
-        self.assertEqual(data['file']['id'], self.file_content_serialize.id)
+        self.assertNotIn('id', data)
 
     def test_deserialize_part(self):
         # Usually, you don’t create nested relationships on create with read_only=True fields

@@ -5,6 +5,9 @@ from django_a2a.models.task import Task
 from django_a2a.models.part import Part
 
 from django_a2a.serializers.part import PartSerializer
+from django_a2a.serializers.push_notification import PushNotificationConfigSerializer
+
+# Models
 
 class MessageSerializer(serializers.ModelSerializer):
     parts = PartSerializer(many=True)
@@ -20,10 +23,11 @@ class MessageSerializer(serializers.ModelSerializer):
         # Include if writing directly, otherwise inferred from task serializer.
         required=False,
     )
+    task = serializers.PrimaryKeyRelatedField(queryset=Task.objects.all(), write_only=True, required=False)
 
     class Meta:
         model = Message
-        fields = "__all__"
+        exclude = ["kind", "created_by", "created_on", "updated_on"]
 
     def validate(self, data):
         parts = data.get('parts', [])
@@ -39,3 +43,19 @@ class MessageSerializer(serializers.ModelSerializer):
             Part.objects.create(message=message, **part_data)
 
         return message
+
+# Methods
+
+class MessageSendConfigurationSerializer(serializers.Serializer):
+    acceptedOutputModes = serializers.ListField(
+        child=serializers.CharField(), required=True
+    )
+    historyLength = serializers.IntegerField(required=False)
+    pushNotificationConfig = PushNotificationConfigSerializer(required=False)
+    blocking = serializers.BooleanField(required=False)
+
+
+class MessageSendParamsSerializer(serializers.Serializer):
+    message = MessageSerializer()
+    configuration = MessageSendConfigurationSerializer(required=False)
+    metadata = serializers.DictField(child=serializers.JSONField(), required=False)

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
@@ -26,6 +27,14 @@ class FileContent(models.Model):
     ###################################
     # Additional Relations and Fields #
     ###################################
+    # Ownership for user authentication.
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+
     created_on = models.DateTimeField(default=timezone.now) 
 
     def clean(self):
@@ -86,7 +95,19 @@ class Part(models.Model):
         null=True,
         blank=True
     )
+
+    # Ownership for user authentication.
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+
     created_on = models.DateTimeField(default=timezone.now) 
+
+    # Should update when new parts are added
+    updated_on = models.DateTimeField(default=timezone.now)
 
     def clean(self):
         super().clean()

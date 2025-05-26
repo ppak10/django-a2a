@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
@@ -34,6 +35,14 @@ class Message(models.Model):
         related_name='history',
         null=True,
         blank=True
+    )
+
+    # Ownership for user authentication.
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
 
     # Necessary for ordering
