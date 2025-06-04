@@ -3,7 +3,7 @@ from rest_framework.exceptions import AuthenticationFailed, NotAuthenticated, Pe
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from django_a2a.methods import message_send
+from django_a2a.methods import message_send, message_stream
 
 class MethodsView(APIView):
     permission_classes = []
@@ -64,11 +64,8 @@ class MethodsView(APIView):
 
         if method == 'message/send':
             return message_send(request)
-
-        if method == 'message/send':
-            return self.method_not_found(request.data, not_implemented=True)
         elif method == 'message/stream':
-            return self.method_not_found(request.data, not_implemented=True)
+            return message_stream(request)
         elif method == 'tasks/get':
             return self.method_not_found(request.data, not_implemented=True)
         elif method == 'tasks/cancel':
